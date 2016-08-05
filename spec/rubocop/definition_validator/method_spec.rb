@@ -224,5 +224,20 @@ describe Rubocop::DefinitionValidator::Method do
         include_examples 'should_be_callable'
       end
     end
+
+    context "rest and kwrest" do
+      let(:code) { 'def foo(a, *b, c:, d:2, **e)' }
+      let(:name) { 'foo' }
+
+      context 'with splat arg and required keyword' do
+        let(:args) { to_rubocop_ast("f(1, *args, c: 1)").method_args }
+        include_examples 'should_be_callable'
+      end
+
+      context "with splat arg but without required keyword" do
+        let(:args) { to_rubocop_ast("f(1, *args)").method_args }
+        include_examples 'should_not_be_callable'
+      end
+    end
   end
 end
